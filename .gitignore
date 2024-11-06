@@ -1,0 +1,32 @@
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+/src/views/index.html
+/temp/*sitemap.xml
+
+# misc
+.env
+
+.DS_Store
+.env.local
+.env.development
+.env.development
+.env.test.local
+
+# old
+/admin2
+/client2
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.migrate
+newrelic_agent.log
