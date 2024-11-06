@@ -1,11 +1,11 @@
 import mongoose from 'mongoose'
 
-const AuthRole = {
+const UserRole = {
   DOCTOR: 'DOCTOR',
   PATIENT: 'PATIENT'
 };
 
-const AuthSchema = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -17,6 +17,13 @@ const AuthSchema = new mongoose.Schema(
     },
     userType: {
       type: String,
+      required: true,
+    },
+    otp: {
+      type: Number
+    },
+    number: {
+      type: Number,
       required: true,
     },
     createdAt: {
@@ -32,15 +39,15 @@ const AuthSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false },
 );
 
-AuthSchema.set('toJSON', {
+UserSchema.set('toJSON', {
   virtuals: true,
 });
 
 
-const Auth = mongoose.model('Auth', AuthSchema);
+const User = mongoose.model('User', UserSchema);
 
 export {
-  AuthSchema,
-  Auth,
-  AuthRole,
+  UserSchema,
+  User,
+  UserRole,
 };

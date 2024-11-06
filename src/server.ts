@@ -7,9 +7,8 @@ import express from "express";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import http from "http";
+import services from "./services";
 
-import router from "./routes/auth";
-import { services } from "./routes";
 const app = express();
 
 export async function init() {
@@ -25,11 +24,11 @@ export async function init() {
   // );
 
   const allowedOrigins = [
-    'http://localhost:8081'
+    'http://localhost:8083'
   ];
 
   if (NODE_ENV === 'development') {
-    allowedOrigins.push('http://localhost:3000', 'http://localhost:3003');
+    allowedOrigins.push('http://localhost:8083', 'http://localhost:8083');
   }
 
   const corsOptions = {
@@ -45,14 +44,14 @@ export async function init() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization,Origin,Accept,Content-Security-Policy',
   };
-  // app.use(express.json());
-  // app.use(bodyParser.urlencoded({ extended: true }))
-  // app.use(cors(corsOptions));
-  app.use(express.json({ limit: '20mb' }));
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(express.json());
+  app.use(bodyParser.urlencoded({ extended: true }))
   app.use(cors(corsOptions));
-  app.use(helmet());
-  app.use(cookieParser());
+  // app.use(express.json({ limit: '20mb' }));
+  // app.use(bodyParser.urlencoded({ extended: true }));
+  // app.use(cors(corsOptions));
+  // app.use(helmet());
+  // app.use(cookieParser());
 
   app.use(helmet());
   app.use((req, res, next) => {
@@ -92,6 +91,7 @@ export async function init() {
   });
 
   app.use('/api', services);
+
 
   app.get('/healthcheck', (req, res) => {
     res.sendStatus(200);
