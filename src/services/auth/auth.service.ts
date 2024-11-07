@@ -158,7 +158,7 @@ const authService = {
           const existingUser = await User.findOneAndUpdate({ email }, { otp: rundomOTP });
           const success = new SuccessResponse('Email has been sent successfully',);
           return res.status(success.status).json({
-            error: {
+            data: {
               status: success.status,
               message: success.message
             }
@@ -183,9 +183,9 @@ const authService = {
     try {
 
       const existingUser = await User.findOneAndUpdate({ email }, { otp: null });
-      const success = new SuccessResponse('OTP has been sent');
+      const success = new SuccessResponse('OTP has expired');
       return res.status(success.status).json({
-        error: {
+        data: {
           status: success.status,
           message: success.message
         }
@@ -209,7 +209,8 @@ const authService = {
         const user = await User.findOne({ email });
 
         if (user) {
-          if (user.otp != null && user.otp === otp) {
+          
+          if (otp != null && user.otp === otp) {
             const data = await jwt.sign({
               username: email,
               UserType: user.userType,

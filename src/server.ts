@@ -40,11 +40,6 @@ export async function init() {
   app.use(express.json());
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(cors(corsOptions));
-  // app.use(express.json({ limit: '20mb' }));
-  // app.use(bodyParser.urlencoded({ extended: true }));
-  // app.use(cors(corsOptions));
-  // app.use(helmet());
-  // app.use(cookieParser());
 
   app.use(helmet());
   app.use((req, res, next) => {
