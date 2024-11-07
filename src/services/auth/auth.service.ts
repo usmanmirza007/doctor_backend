@@ -1,11 +1,12 @@
 
-import { User } from './auth.model';
-import { NextFunction, Request, Response } from 'express';
-import { AuthOTPDto, AuthSinginDto, AuthSingupDto, UserType } from './dto';
+import { NextFunction, Response } from 'express';
+import nodemailer from 'nodemailer'
 var bcrypt = require('bcrypt')
 import jwt from 'jsonwebtoken'
+
+import { User } from './auth.model';
 import { secret_key } from '../../secret';
-import nodemailer from 'nodemailer'
+import { AuthOTPDto, AuthSinginDto, AuthSingupDto, UserType } from './dto';
 import { ConflictError, SuccessResponse, BadRequestError, NotFoundError, UnauthorizedError } from '../../utils';
 
 const authService = {
@@ -41,7 +42,13 @@ const authService = {
           number: number
         })
         user.save()
-        throw new SuccessResponse('User has been register successfully');
+        const success = new SuccessResponse('User has been register successfully');
+        return res.status(success.status).json({
+          data: {
+            status: success.status,
+            message: success.message,
+          }
+        });
       }
 
     } catch (error) {
@@ -175,8 +182,14 @@ const authService = {
     }
     try {
 
-      const existingUser = await User.findOneAndUpdate({ email }, { otp: 0 });
-      throw new SuccessResponse('OTP has been sent');
+      const existingUser = await User.findOneAndUpdate({ email }, { otp: null });
+      const success = new SuccessResponse('OTP has been sent');
+      return res.status(success.status).json({
+        error: {
+          status: success.status,
+          message: success.message
+        }
+      });
 
     } catch (error) {
       console.log('err', error);
@@ -196,7 +209,7 @@ const authService = {
         const user = await User.findOne({ email });
 
         if (user) {
-          if (user.otp === otp) {
+          if (user.otp != null && user.otp === otp) {
             const data = await jwt.sign({
               username: email,
               UserType: user.userType,

@@ -7,6 +7,7 @@ import express from "express";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import http from "http";
+
 import services from "./services";
 import { errorHandler } from "./middleware";
 
@@ -14,15 +15,6 @@ const app = express();
 
 export async function init() {
   const PORT = process.env.PORT;
-
-
-  // app.use(
-  //   session({
-  //     secret: process.env.SESSION_SECRET_KEY,
-  //     resave: false,
-  //     saveUninitialized: false,
-  //   })
-  // );
 
   const allowedOrigins = [
     'http://localhost:8083'

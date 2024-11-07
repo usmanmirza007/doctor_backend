@@ -1,5 +1,5 @@
-// src/middleware/errorHandler.ts
 import { Request, Response, NextFunction } from 'express';
+
 import { CustomError } from './utils';
 
 export function errorHandler(
@@ -8,7 +8,7 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  
+
   if (err instanceof CustomError) {
     return res.status(err.status).json({
       error: {
@@ -17,7 +17,7 @@ export function errorHandler(
         details: err.details || null,
       },
     });
-  } 
+  }
 
   // Generic response for unexpected errors
   res.status(500).json({

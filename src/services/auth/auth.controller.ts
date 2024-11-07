@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+
 import authService from './auth.service';
-import { ERRORS } from '../../consts';
 
 const authController = {
 
@@ -20,12 +20,12 @@ const authController = {
       const user = await authService.signin(req.body, res, next)
 
     } catch (err) {
-      console.log(ERRORS.SIGN_IN, err)
+      console.log('err', err)
     }
   },
 
   createOtp: async (req: Request, res: Response, next: NextFunction) => {
-    try {      
+    try {
       const otp = await authService.createOtp(req.body, res, next)
 
     } catch (error) {

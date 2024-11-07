@@ -3,5 +3,5 @@ require('dotenv').config({ path: `env/.env.${NODE_ENV}` });
 
 export const secret_key = {
 	algorithms: ['HS256' as const],
-	secret: 'JC8KBNT53TXjwqFAFjf3nLSGXmdHmGKZ', // TODO: Put in process.env
+	secret: process.env.JWT_SECRET ? process.env.JWT_SECRET : '', // TODO: Put in process.env
 };
