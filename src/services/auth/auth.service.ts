@@ -1,28 +1,35 @@
 
 import { User } from './auth.model';
-import { createCustomError } from '../utils/customError';
-import { AuthOTPDto, AuthSinginDto, AuthSingupDto } from './dto';
+import { NextFunction, Request, Response } from 'express';
+import { AuthOTPDto, AuthSinginDto, AuthSingupDto, UserType } from './dto';
 var bcrypt = require('bcrypt')
 import jwt from 'jsonwebtoken'
 import { secret_key } from '../../secret';
 import nodemailer from 'nodemailer'
+import { ConflictError, SuccessResponse, BadRequestError, NotFoundError, UnauthorizedError } from '../../utils';
 
 const authService = {
 
-  signup: async (body: AuthSingupDto) => {
+  signup: async (body: AuthSingupDto, res: Response, next: NextFunction) => {
     try {
-      const { name, email, password, userType, } = body
+      const { name, email, password, userType, number } = body
 
-      if (!name || !password || !email || !userType) {
-
-        throw createCustomError('Incomplete parameter', 400)
+      if (!name || !password || !email || !userType || !number) {
+        throw new BadRequestError('Incomplete parameter');
       } else {
+        let type: UserType = userType
 
+        if (type == UserType.DOCTOR) {
+          type = UserType.DOCTOR
+        } else if (type == UserType.PATIENT) {
+          type = UserType.PATIENT
+        } else {
+          throw new BadRequestError('Invalid user type');
+        }
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
-          throw createCustomError('User with email is already register', 409)
-
+          throw new ConflictError('User with email is already register');
         }
         let hash = bcrypt.hashSync(password, 8);
 
@@ -30,32 +37,41 @@ const authService = {
           email: email,
           userType: userType,
           name: name,
-          password: hash
+          password: hash,
+          number: number
         })
         user.save()
-        throw createCustomError('User has been register successfully', 200)
-
+        throw new SuccessResponse('User has been register successfully');
       }
 
     } catch (error) {
       console.log('err', error);
-      throw createCustomError('Something went wrong', 500)
+      next(error)
     }
   },
 
-  signin: async (body: AuthSinginDto) => {
+  signin: async (body: AuthSinginDto, res: Response, next: NextFunction) => {
     try {
       const { email, password, userType } = body
 
       if (!password || !email || !userType) {
-
-        throw createCustomError('Incomplete parameter', 400)
+        throw new BadRequestError('Incomplete parameter');
       } else {
+
+        let type: UserType = userType
+
+        if (type == UserType.DOCTOR) {
+          type = UserType.DOCTOR
+        } else if (type == UserType.PATIENT) {
+          type = UserType.PATIENT
+        } else {
+          throw new BadRequestError('Invalid user type');
+        }
 
         const existingUser = await User.findOne({ email });
 
         if (!existingUser) {
-          throw createCustomError('User does not exists', 404)
+          throw new NotFoundError('User does not exists');
         }
         let matched = bcrypt.compareSync(password, existingUser.password);
 
@@ -69,103 +85,111 @@ const authService = {
             algorithm: secret_key.algorithms[0]
           });
 
-          return {
-            token: data
-          }
+          const success = new SuccessResponse('User has been login successfully',);
+          return res.status(success.status).json({
+            data: {
+              status: success.status,
+              message: success.message,
+              token: data
+            }
+          });
 
         } else {
-          throw createCustomError('Incorrect credentials', 401)
-
+          throw new UnauthorizedError('Incorrect credentials');
         }
       }
 
     } catch (error) {
       console.log('err', error);
-      throw createCustomError('Something went wrong', 500)
+      next(error)
     }
   },
 
-  createOtp: async (email: string) => {
+  createOtp: async (body: AuthOTPDto, res: Response, next: NextFunction) => {
     try {
+      const { email } = body
 
       if (!email) {
-        throw createCustomError('Request should have email', 400)
+        throw new BadRequestError('Request should have email');
       }
-      try {
-        const existingUser = await User.findOne({ email });
+      const existingUser = await User.findOne({ email });
 
-        const rundomOTP = Math.floor(100000 + Math.random() * 9000)
-        const mailerConfig = {
-          service: 'gmail',
-          secure: true,
-          port: 465,
-          // debug: true,
-          auth: {
-            user: "pureworkerapp@gmail.com",
-            pass: "mphtgdqcapmvmyll"
-          }
-        };
+      const rundomOTP = Math.floor(100000 + Math.random() * 9000)
+      const mailerConfig = {
+        service: 'gmail',
+        secure: true,
+        port: 465,
+        // debug: true,
+        auth: {
+          user: "pureworkerapp@gmail.com",
+          pass: "mphtgdqcapmvmyll"
+        }
+      };
 
-        const transporter = nodemailer.createTransport(mailerConfig);
+      const transporter = nodemailer.createTransport(mailerConfig);
 
-        const mailOptions = {
-          from: mailerConfig.auth.user,
-          to: existingUser?.email,
-          subject: "Doctor",
-          // attachments: [
-          //     {
-          //         filename: 'badge_code.txt',
-          //         content: String('123')0
-          //     }],
-          html: `<body>` +
-            `<p style="font-size: 1rem">Your OTP: <span style="font-weight: bold; font-size: 1rem">${rundomOTP}</span></p>` +
-            `</body>`
-        };
+      const mailOptions = {
+        from: mailerConfig.auth.user,
+        to: existingUser?.email,
+        subject: "Doctor",
+        // attachments: [
+        //     {
+        //         filename: 'badge_code.txt',
+        //         content: String('123')0
+        //     }],
+        html: `<body>` +
+          `<p style="font-size: 1rem">Your OTP: <span style="font-weight: bold; font-size: 1rem">${rundomOTP}</span></p>` +
+          `</body>`
+      };
 
-        transporter.sendMail(mailOptions, async function (error: any, info: any) {
+      transporter.sendMail(mailOptions, async function (error: any, info: any) {
 
-          if (error) {
-            console.log('mail error', error);
-            throw createCustomError(error, 500)
+        if (error) {
+          console.log('mail error', error);
+          next(error)
+        } else {
+          const existingUser = await User.findOneAndUpdate({ email }, { otp: rundomOTP });
+          const success = new SuccessResponse('Email has been sent successfully',);
+          return res.status(success.status).json({
+            error: {
+              status: success.status,
+              message: success.message
+            }
+          });
 
-          } else {
-            const existingUser = await User.findOneAndUpdate({ email }, { otp: rundomOTP });
-            throw createCustomError('success', 200)
-          }
-        });
+        }
+      });
 
-      } catch (error) {
-        console.log('err', error);
-        throw createCustomError('Something went wrong', 500)
-      }
+
     } catch (error) {
-      console.log('err', error);
-      throw createCustomError('Something went wrong', 500)
+      console.log('err 33', error);
+      next(error)
     }
   },
 
-  resetOtp: async (email: string) => {
+  resetOtp: async (body: AuthOTPDto, res: Response, next: NextFunction) => {
+    const { email } = body
 
     if (!email) {
-      throw createCustomError('Request should have email', 400)
+      throw new BadRequestError('Request should have email');
     }
     try {
 
       const existingUser = await User.findOneAndUpdate({ email }, { otp: 0 });
-      throw createCustomError('success', 200)
+      throw new SuccessResponse('OTP has been sent');
 
     } catch (error) {
       console.log('err', error);
-      throw createCustomError(JSON.stringify(error), 500)
+      next(error)
     }
   },
 
 
-  verifyOtp: async (data: AuthOTPDto) => {
+  verifyOtp: async (data: AuthOTPDto, res: Response, next: NextFunction) => {
     const { email, otp } = data
 
     if (!email || !otp) {
-      throw createCustomError('Incomplet Parameter', 400)
+      throw new BadRequestError('Incomplet Parameter');
     } else {
       try {
 
@@ -182,20 +206,23 @@ const authService = {
               algorithm: secret_key.algorithms[0]
             });
 
-            return {
-              token: data,
-              userType: user.userType
-            }
+            const success = new SuccessResponse('User has been verifed successfully',);
+            return res.status(success.status).json({
+              data: {
+                status: success.status,
+                message: success.message,
+                token: data
+              }
+            });
           } else {
-            throw createCustomError('OTP does not match', 400)
+            throw new BadRequestError('OTP does not match');
           }
         } else {
-          throw createCustomError('User not found', 404)
+          throw new NotFoundError('User not found');
         }
       } catch (error) {
         console.log('err', error)
-        throw createCustomError('Something went erong', 500)
-
+        next(error)
       }
     }
   }

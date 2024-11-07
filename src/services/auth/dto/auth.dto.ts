@@ -1,8 +1,8 @@
 
 
-enum UserType {
-  DOCTOR,
-  PATIENT
+export enum UserType {
+  DOCTOR = 'DOCTOR',
+  PATIENT = 'PATIENT'
 }
 
 export interface AuthSingupDto {
@@ -21,5 +21,5 @@ export interface AuthSinginDto {
 
 export interface AuthOTPDto {
   email: string, 
-  otp: number
+  otp?: number
 }

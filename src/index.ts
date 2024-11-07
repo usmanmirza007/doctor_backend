@@ -9,7 +9,7 @@ Promise.resolve()
   .then(() => {
     if (process.env.DB_CONNECTION) {
       
-      mongoose.connect('mongodb://127.0.0.1:27017/doctor');
+      mongoose.connect(process.env.DB_CONNECTION);
       console.log('Database Connection Succeed', process.env.DB_CONNECTION);
       
       mongoose.Promise = global.Promise;

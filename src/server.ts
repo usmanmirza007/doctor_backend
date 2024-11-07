@@ -8,6 +8,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import http from "http";
 import services from "./services";
+import { errorHandler } from "./middleware";
 
 const app = express();
 
@@ -96,6 +97,7 @@ export async function init() {
   app.get('/healthcheck', (req, res) => {
     res.sendStatus(200);
   });
+  app.use(errorHandler);
 
   const httpServer = http.createServer(app);
   var server = httpServer.listen(PORT, () => {

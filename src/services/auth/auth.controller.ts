@@ -6,17 +6,18 @@ const authController = {
 
   signup: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user = await authService.signup(req.body)
+      const user = await authService.signup(req.body, res, next)
+
     } catch (error) {
       console.log('err', error);
 
-      return res.status(500).json({ message: 'Something went wrong' })
+      return res.json(error)
     }
   },
 
   signin: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user = await authService.signin(req.body)
+      const user = await authService.signin(req.body, res, next)
 
     } catch (err) {
       console.log(ERRORS.SIGN_IN, err)
@@ -24,19 +25,21 @@ const authController = {
   },
 
   createOtp: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const otp = await authService.createOtp(req.body)
+    try {      
+      const otp = await authService.createOtp(req.body, res, next)
 
-    } catch (err) {
-      console.log(ERRORS.SIGN_IN, err)
+    } catch (error) {
+      console.log('err', error)
+      return res.json(error)
+
     }
   },
 
 
-  resetOtp: async (req: Request, res: Response) => {
+  resetOtp: async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-      const resetOtp = await authService.resetOtp(req.body)
+      const resetOtp = await authService.resetOtp(req.body, res, next)
 
     } catch (error) {
       console.log('err', error);
@@ -44,25 +47,18 @@ const authController = {
     }
   },
 
-  verifyOtp: async (req: Request, res: Response) => {
+  verifyOtp: async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-      const verifyOtp = await authService.verifyOtp(req.body)
+      const verifyOtp = await authService.verifyOtp(req.body, res, next)
 
     } catch (error) {
-      console.log('dff', error)
+      console.log('err', error)
       return res.status(500).json({ message: "Something went erong" })
     }
 
   },
 
-  forgetPassword: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-
-    } catch (error) {
-      res.status(500).send(ERRORS.UNEXPECTED_ERROR)
-    }
-  },
 }
 
 export default authController
