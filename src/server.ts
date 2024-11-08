@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 import http from "http";
 
 import services from "./services";
-import { errorHandler } from "./middleware";
+import { errorHandler, responseHandler } from "./middleware";
 
 const app = express();
 
@@ -77,6 +77,7 @@ export async function init() {
     // }
     next();
   });
+  app.use(responseHandler);
 
   app.use('/api', services);
 

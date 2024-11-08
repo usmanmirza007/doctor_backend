@@ -11,7 +11,7 @@ import { ConflictError, SuccessResponse, BadRequestError, NotFoundError, Unautho
 
 const authService = {
 
-  signup: async (body: AuthSingupDto, res: Response, next: NextFunction) => {
+  signup: async (body: AuthSingupDto, res: any, next: NextFunction) => {
     try {
       const { name, email, password, userType, number } = body
 
@@ -43,12 +43,14 @@ const authService = {
         })
         user.save()
         const success = new SuccessResponse('User has been register successfully');
-        return res.status(success.status).json({
-          data: {
-            status: success.status,
-            message: success.message,
-          }
-        });
+        // return res.sendResponse(success)
+        // return res.status(success.status).json({
+        //   data: {
+        //     status: success.status,
+        //     message: success.message,
+        //   }
+        // });
+        return res.sendResponse(success);
       }
 
     } catch (error) {

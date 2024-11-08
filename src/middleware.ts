@@ -1,6 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { CustomError } from './utils';
+import { CustomError, SuccessResponse } from './utils';
+
+export function responseHandler(
+  req: Request,
+  res: any,
+  next: NextFunction
+) {
+  res.sendResponse = (data: SuccessResponse) => {
+    const { status, message, details } = data;
+    return res.status(status).json({
+      data: {
+        status,
+        message,
+        result: {
+          ...details
+        },
+      }
+    });
+  };
+  next();
+}
 
 export function errorHandler(
   err: CustomError,
