@@ -6,3 +6,7 @@ export {
   BadRequestError,
   SuccessResponse
 } from './customError'
+
+export {
+  stroage
+} from './multer'

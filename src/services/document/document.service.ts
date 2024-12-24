@@ -1,17 +1,30 @@
 
 import { NextFunction, Response } from 'express';
 
-var bcrypt = require('bcrypt')
+let { exec } = require('child_process')
 
-import { ConflictError, SuccessResponse, BadRequestError, NotFoundError, UnauthorizedError } from '../../utils';
+import path from 'path'
 
 const documentService = {
 
-  signup: async (body: any, res: any, next: NextFunction) => {
+  encryptPDF: async (req: any, res: any, next: NextFunction) => {
     try {
-      const { name, email, password, userType, number } = body
+      const { password } = req.body
 
-      
+      if (req.file) {
+        let outputfile = req.file.path
+        exec(`python src/services/document/python/encryptPdf.py ${outputfile} ${outputfile} ${password}`, (error: any, stdout: any, stderr: any) => {
+          if (error) {
+            console.error(`Error executing Python script: ${error.message}`);
+            return;
+          }
+          if (stderr) {
+            console.error(`stderr: ${stderr}`);
+            return;
+          }
+          console.log(`Python script output: ${stdout}`);
+        });
+      }
 
     } catch (error) {
       console.log('err', error);

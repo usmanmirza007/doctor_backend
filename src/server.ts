@@ -10,20 +10,9 @@ import http from "http";
 import multer from 'multer'
 import services from "./services";
 import { errorHandler, responseHandler } from "./middleware";
-import path from "path";
-let { spawn, exec } = require('child_process')
+import { stroage } from "./utils";
+
 const app = express();
-
-var stroage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'src/public/uploads')
-  },
-  filename: function (req, file, cb) {
-    console.log('file', file.originalname);
-
-    cb(null, Date.now() + file.originalname)
-  }
-})
 
 var upload = multer({ storage: stroage }).single('file')
 
@@ -56,32 +45,6 @@ export async function init() {
   app.use(cors(corsOptions));
   app.use(express.static('src/public'))
 
-  app.post('/encryptedpdf', (req, res,) => {
-
-    upload(req, res, (err) => {
-      if (err) {
-        console.log('err file', err);
-
-      }
-
-      let password = req.body.password
-
-      if (req.file) {
-        let outputfile = req.file.path
-        exec(`python src/app.py ${req.file.path} ${outputfile} ${password}`, (error: any, stdout: any, stderr: any) => {
-          if (error) {
-            console.error(`Error executing Python script: ${error.message}`);
-            return;
-          }
-          if (stderr) {
-            console.error(`stderr: ${stderr}`);
-            return;
-          }
-          console.log(`Python script output: ${stdout}`);
-        });
-      }
-    })
-  })
   app.use(helmet());
   app.use((req, res, next) => {
     if (req.originalUrl === '/api/webhooks') {

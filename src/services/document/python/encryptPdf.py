@@ -37,15 +37,15 @@ def encrypt_pdf(input_pdf_path, output_pdf_path, password):
         print(f'An error occurred: {e}')
         sys.exit(2)
 
+
 if __name__ == "__main__":
     if len(sys.argv) != 4:
         print("Usage: python app.py <input_pdf_path> <output_pdf_path> <password>")
-        # sys.exit(2)
+        sys.exit(2)
 
     input_pdf_path = sys.argv[1]
     output_pdf_path = sys.argv[2]
     password = sys.argv[3]
-    print("sys fofofo:", sys.argv)
 
     encrypt_pdf(input_pdf_path, output_pdf_path, password)
 
