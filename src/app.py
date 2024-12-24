@@ -4,11 +4,6 @@ import os
 
 def encrypt_pdf(input_pdf_path, output_pdf_path, password):
     try:
-        # Log file paths and password
-        print("Input PDF Path:", input_pdf_path)
-        print("Output PDF Path:", output_pdf_path)
-        print("Password:", password)
-
         # Ensure input file exists
         if not os.path.exists(input_pdf_path):
             print(f"Error: Input file '{input_pdf_path}' does not exist.")
@@ -41,8 +36,6 @@ def encrypt_pdf(input_pdf_path, output_pdf_path, password):
     except Exception as e:
         print(f'An error occurred: {e}')
         sys.exit(2)
-def hello():
-    print('hello')
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
@@ -53,10 +46,8 @@ if __name__ == "__main__":
     output_pdf_path = sys.argv[2]
     password = sys.argv[3]
     print("sys fofofo:", sys.argv)
-    # print("Output PDF Path 1:", output_pdf_path)
-    # print("Password 1:", password)
+
     encrypt_pdf(input_pdf_path, output_pdf_path, password)
-    # hello()
 
 
 
