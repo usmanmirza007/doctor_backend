@@ -8,16 +8,16 @@ import { init } from "./server";
 
 Promise.resolve()
   .then(() => {
-    if (process.env.DB_CONNECTION) {
+    // if (process.env.DB_CONNECTION) {
 
-      mongoose.connect(process.env.DB_CONNECTION);
-      console.log('Database Connection Succeed', process.env.DB_CONNECTION);
+    //   mongoose.connect(process.env.DB_CONNECTION);
+    //   console.log('Database Connection Succeed', process.env.DB_CONNECTION);
 
-      mongoose.Promise = global.Promise;
-    }
-    mongoose.connection.on('error', (err: any) => {
-      console.log('Database Connection Failed:', err);
-    });
+    //   mongoose.Promise = global.Promise;
+    // }
+    // mongoose.connection.on('error', (err: any) => {
+    //   console.log('Database Connection Failed:', err);
+    // });
     return init();
   })
   .catch((err) => {

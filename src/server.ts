@@ -7,21 +7,36 @@ import express from "express";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import http from "http";
-
+import multer from 'multer'
 import services from "./services";
 import { errorHandler, responseHandler } from "./middleware";
-
+import path from "path";
+let {spawn} = require('child_process')
 const app = express();
+
+var stroage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'src/public/uploads')
+  },
+  filename: function (req, file, cb) {
+    console.log('file', file.originalname);
+    
+    cb(null, Date.now() +file.originalname)
+  }
+})
+
+var upload = multer({storage: stroage}).single('file')
 
 export async function init() {
   const PORT = process.env.PORT;
-
+  console.log('PORT', PORT);
+  
   const allowedOrigins = [
-    'http://localhost:8083'
+    'http://localhost:8081'
   ];
 
   if (NODE_ENV === 'development') {
-    allowedOrigins.push('http://localhost:8083', 'http://localhost:8083');
+    allowedOrigins.push('http://localhost:8081', 'http://localhost:8081');
   }
 
   const corsOptions = {
@@ -40,7 +55,41 @@ export async function init() {
   app.use(express.json());
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(cors(corsOptions));
+  app.use(express.static('src/public'))
 
+  app.post('/encryptedpdf', (req, res, ) => {
+    console.log('fofofof');
+
+    upload(req, res, (err) => {
+      if (err) {
+        console.log('err file', err);
+        
+      }
+      // console.log('sososos', req.file, req.body.password);
+      // let outputfile = Date.now() + "output.pdf"
+      // let outputfile = path.join(__dirname, `${Date.now()}_output.pdf`);
+      
+      let password = req.body.password
+      
+      if (req.file) {
+        let outputfile = req.file.path
+        console.log('outputfile', req.file.path, outputfile);
+        // src/public/uploads/cardio1.pdf 
+        let process = spawn('python', ["app.py", req.file.path, outputfile, password ])
+
+        process.on('exit', (code: any) => {
+          console.log('code', code);
+          
+          // if (code == 0) {
+            res.download(outputfile, (err) => {
+              console.log('err', err);
+              
+            })
+          // }
+        })
+      }
+    })
+  })
   app.use(helmet());
   app.use((req, res, next) => {
     if (req.originalUrl === '/api/webhooks') {
@@ -85,7 +134,9 @@ export async function init() {
   app.get('/healthcheck', (req, res) => {
     res.sendStatus(200);
   });
+
   app.use(errorHandler);
+
 
   const httpServer = http.createServer(app);
   var server = httpServer.listen(PORT, () => {
