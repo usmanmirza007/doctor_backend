@@ -7,6 +7,6 @@ export const stroage = multer.diskStorage({
   filename: function (req, file, cb) {
     const cleanPath = file.originalname.replace(/\s+/g, '')
 
-    cb(null, Date.now() + cleanPath)
+    cb(null, Date.now() + "-" + cleanPath)
   }
 })
