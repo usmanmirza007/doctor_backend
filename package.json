@@ -35,7 +35,8 @@
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.4",
     "os": "^0.1.2",
-    "parse-duration": "^1.1.0"
+    "parse-duration": "^1.1.0",
+    "pdf-merger-js": "^5.1.2"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.7",

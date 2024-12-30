@@ -19,6 +19,11 @@
     <!-- <input type="file" name="file" accept="image/*" required id=""> -->
     <input type="submit" value="Image To PDF">
   </form>
+  <form action="/api/document/merge_pdf" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".pdf" required id="">
+    <input type="file" name="file" accept=".pdf" required id=""> 
+    <input type="submit" value="Merge PDF">
+  </form>
 </body>
 
 </html>

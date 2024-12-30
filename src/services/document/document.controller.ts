@@ -28,6 +28,18 @@ const documentController = {
     }
   },
 
+  mergePdf: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.mergePdf(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
 }
 
 export default documentController

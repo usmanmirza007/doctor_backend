@@ -2,6 +2,7 @@
 import { NextFunction, Response } from 'express';
 
 let { exec } = require('child_process')
+import PDFMerger from 'pdf-merger-js'
 import fs from 'fs';
 
 const documentService = {
@@ -61,6 +62,38 @@ const documentService = {
             });
           });
         });
+      }
+
+    } catch (error) {
+      console.log('err', error);
+      next(error)
+    }
+  },
+
+
+  mergePdf: async (req: any, res: any, next: NextFunction) => {
+    try {
+
+      if (req.files) {
+
+        const filePathsArg = req.files.map((item: any) => item.path)
+        const outputFilePath = `src/public/uploads/merge_${Date.now()}.pdf`; // Output file
+
+        const merger = new PDFMerger(); // Create merger instance
+
+        try {
+          // Append each PDF file
+          for (let file of filePathsArg) {
+            await merger.add(file); // Add PDF file to merger
+          }
+
+          await merger.save(outputFilePath);
+
+          console.log('PDF files merged successfully into:', outputFilePath);
+        } catch (error) {
+          console.error('Error merging PDF files:', error);
+        }
+
       }
 
     } catch (error) {
