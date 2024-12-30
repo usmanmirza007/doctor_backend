@@ -16,7 +16,9 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "csvtojson": "^2.0.10",
+    "docx": "^9.1.0",
     "dotenv": "^8.6.0",
+    "exceljs": "^4.4.0",
     "express": "^4.21.1",
     "express-form-data": "^2.0.22",
     "express-jwt": "^8.4.1",
@@ -29,6 +31,7 @@
     "jsonwebtoken": "^9.0.1",
     "jwk-to-pem": "^2.0.5",
     "jwt-simple": "^0.5.6",
+    "mammoth": "^1.8.0",
     "migrate": "^1.8.0",
     "mongoose": "^7.4.1",
     "multer": "^1.4.5-lts.1",
@@ -39,6 +42,11 @@
     "os": "^0.1.2",
     "parse-duration": "^1.1.0",
     "pdf-merger-js": "^5.1.2",
+    "pdf-parse": "^1.1.1",
+    "pdfkit": "^0.16.0",
+    "sharp": "^0.33.5",
+    "shelljs": "^0.8.5",
+    "spellchecker": "^3.7.1",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
@@ -50,6 +58,10 @@
     "@types/json2csv": "^5.0.7",
     "@types/multer": "^1.4.12",
     "@types/nodemailer": "^6.4.16",
+    "@types/pdf-parse": "^1.1.4",
+    "@types/pdfkit": "^0.13.8",
+    "@types/shelljs": "^0.8.15",
+    "@types/spellchecker": "^3.5.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   }

@@ -109,6 +109,90 @@ const documentController = {
     }
   },
 
+  wordToTxt: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.wordToTxt(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
+  txtToWord: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.txtToWord(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
+  compressPdf: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.compressPdf(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
+  excelToPdf: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.excelToPdf(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
+  pdfToExcel: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.pdfToExcel(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
+  imageConvert: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.imageConvert(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
+  spellchecker: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.spellchecker(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
 }
 
 export default documentController

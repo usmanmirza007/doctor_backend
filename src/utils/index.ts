@@ -10,3 +10,8 @@ export {
 export {
   stroage
 } from './multer'
+
+export {
+  correctSpelling,
+  extractTextFromDocx
+} from './spell'

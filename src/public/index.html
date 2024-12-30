@@ -30,7 +30,7 @@
   </form>
   <form action="/api/document/csv_to_json" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".csv" required id="">
-    <input type="submit" value="CSV To Json">
+    <input type="submit" value="Csv To Json">
   </form>
   <form action="/api/document/json-to-csv" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".json" required id="">
@@ -43,6 +43,55 @@
   <form action="/api/document/json_to_excel" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".json" required id="">
     <input type="submit" value="Json To Excel">
+  </form>
+  <form action="/api/document/word_to_txt" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".docx" required id="">
+    <input type="submit" value="Word To Txt">
+  </form>
+  <form action="/api/document/txt_to_word" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".txt" required id="">
+    <input type="submit" value="Txt To Word">
+  </form>
+  <form action="/api/document/compress_pdf" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".pdf" required id="">
+    <input type="submit" value="Compress PDF">
+  </form>
+  <form action="/api/document/excel_pdf" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".xlsx" required id="">
+    <input type="submit" value="Excel To PDF">
+  </form>
+  <form action="/api/document/pdf-to-excel" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".pdf" required id="">
+    <input type="submit" value="PDF To Excel">
+  </form>
+  <form action="/api/document/image_convert" method="post" enctype="multipart/form-data">
+    <label for="file">Upload File:</label>
+    <input type="file" name="file" accept="image/*" required>
+    <br><br>
+    
+    <!-- Radio Buttons for Image Type -->
+    <label>Select Image Type:</label><br>
+    <input type="radio" id="png" name="imagetype" value="png" required>
+    <label for="png">PNG</label><br>
+    
+    <input type="radio" id="jpeg" name="imagetype" value="jpeg">
+    <label for="jpeg">JPEG</label><br>
+    
+    <input type="radio" id="webp" name="imagetype" value="webp">
+    <label for="webp">WEBP</label><br>
+    
+    <input type="radio" id="gif" name="imagetype" value="gif">
+    <label for="gif">GIF</label><br>
+    
+    <input type="radio" id="tiff" name="imagetype" value="tiff">
+    <label for="tiff">TIFF</label><br><br>
+    
+    <!-- Submit Button -->
+    <input type="submit" value="Image Convert">
+  </form>
+  <form action="/api/document/spell_checker" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".docx" required id="">
+    <input type="submit" value="Spell Checker">
   </form>
 </body>
 
