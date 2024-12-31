@@ -15,6 +15,8 @@ import ExcelJS from 'exceljs'
 import PDFDocument from 'pdfkit'
 import pdfParse from 'pdf-parse'
 import sharp from 'sharp'
+// import docxConverter from 'docx-pdf'
+const docxConverter = require('docx-pdf');
 import { correctSpelling, extractTextFromDocx } from '../../utils';
 
 const documentService = {
@@ -169,6 +171,38 @@ const documentService = {
 
         // Convert PDF to Word
         // const result = await pdf2word(dataBuffer);
+      }
+
+    } catch (error) {
+      console.log('err', error);
+      next(error)
+    }
+  },
+
+  wordToPdf: async (req: any, res: any, next: NextFunction) => {
+    try {
+
+      console.log('sdfsdfosdf', req.file);
+      if (req.file) {
+
+        const inputWordPath = req.file.path
+        const outputFilePath = `src/public/uploads/pdf_${Date.now()}.pdf`; // Output file
+        
+        docxConverter(inputWordPath, outputFilePath, (err: any, result: any) => {
+          if (err) {
+            console.log('Error during conversion:', err);
+          } else {
+            console.log('Word file successfully converted to PDF:', result);
+          }
+        });
+        //   // Delete the uploaded image files after PDF generation
+        fs.unlink(inputWordPath, (err) => {
+          if (err) {
+            console.error(`Error deleting file ${inputWordPath}: ${err.message}`);
+          } else {
+            console.log(`Deleted file: ${inputWordPath}`);
+          }
+        });
       }
 
     } catch (error) {
@@ -715,7 +749,7 @@ const documentService = {
           // const doc = new Document();
           // const paragraph = new Paragraph(new TextRun(correctedText)); // Proper formatting
           // doc.addSection({ children: [paragraph] });
-  
+
 
           // Save the corrected Word document
           const buffer = await Packer.toBuffer(doc);

@@ -52,6 +52,18 @@ const documentController = {
     }
   },
 
+  wordToPdf: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.wordToPdf(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
   mergePdf: async (req: Request, res: Response, next: NextFunction) => {
     try {
       

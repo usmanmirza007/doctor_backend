@@ -20,11 +20,11 @@ export async function init() {
   const PORT = process.env.PORT;
 
   const allowedOrigins = [
-    'http://localhost:8081'
+    'http://localhost:3000'
   ];
 
   if (NODE_ENV === 'development') {
-    allowedOrigins.push('http://localhost:8081', 'http://localhost:8081');
+    allowedOrigins.push('http://localhost:3000', 'http://localhost:3000');
   }
 
   const corsOptions = {
