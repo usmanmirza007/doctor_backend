@@ -20,12 +20,12 @@
   </form>
   <form action="/api/document/image_to_pdf" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept="image/*" required id="">
-    <input type="file" name="file" accept="image/*" required id=""> 
+    <input type="file" name="file" accept="image/*" required id="">
     <input type="submit" value="Image To PDF">
   </form>
   <form action="/api/document/merge_pdf" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".pdf" required id="">
-    <input type="file" name="file" accept=".pdf" required id=""> 
+    <input type="file" name="file" accept=".pdf" required id="">
     <input type="submit" value="Merge PDF">
   </form>
   <form action="/api/document/csv_to_json" method="post" enctype="multipart/form-data">
@@ -68,24 +68,24 @@
     <label for="file">Upload File:</label>
     <input type="file" name="file" accept="image/*" required>
     <br><br>
-    
+
     <!-- Radio Buttons for Image Type -->
     <label>Select Image Type:</label><br>
     <input type="radio" id="png" name="imagetype" value="png" required>
     <label for="png">PNG</label><br>
-    
+
     <input type="radio" id="jpeg" name="imagetype" value="jpeg">
     <label for="jpeg">JPEG</label><br>
-    
+
     <input type="radio" id="webp" name="imagetype" value="webp">
     <label for="webp">WEBP</label><br>
-    
+
     <input type="radio" id="gif" name="imagetype" value="gif">
     <label for="gif">GIF</label><br>
-    
+
     <input type="radio" id="tiff" name="imagetype" value="tiff">
     <label for="tiff">TIFF</label><br><br>
-    
+
     <!-- Submit Button -->
     <input type="submit" value="Image Convert">
   </form>
@@ -97,6 +97,46 @@
     <input type="file" name="file" accept=".docx" required id="">
     <input type="submit" value="Word To Pdf">
   </form>
+  <form action="/api/document/pages_to_convert" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" required id="">
+    <br><br>
+
+    <!-- Radio Buttons for Image Type -->
+    <label>Select Convert Type:</label><br>
+    <input type="radio" id="png" name="imagetype" value=".png" required onchange="updateButtonName(this)">
+    <label for="png">PNG</label><br>
+
+    <input type="radio" id="jpeg" name="imagetype" value=".jpeg" required onchange="updateButtonName(this)">
+    <label for="jpeg">JPEG</label><br>
+
+    <input type="radio" id="webp" name="imagetype" value=".docx" required onchange="updateButtonName(this)">
+    <label for="webp">DOCX</label><br>
+
+    <input type="radio" id="gif" name="imagetype" value=".pdf" required onchange="updateButtonName(this)">
+    <label for="gif">PDF</label><br>
+
+    <input type="radio" id="tiff" name="imagetype" value=".txt" required onchange="updateButtonName(this)">
+    <label for="tiff">TXT</label><br><br>
+
+    <input type="radio" id="tiff" name="imagetype" value=".epub" required onchange="updateButtonName(this)">
+    <label for="tiff">EPUB</label><br><br>
+
+    <input type="radio" id="tiff" name="imagetype" value=".doc" required onchange="updateButtonName(this)">
+    <label for="tiff">DOC</label><br><br>
+
+    <input type="submit" id="submitButton" value="Convert File">
+  </form>
+  <form action="/api/document/merge_word" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".docx" id="">
+    <input type="file" name="file" accept=".docx" id="">
+    <input type="submit" value="Merge Word">
+  </form>
 </body>
+<script>
+  function updateButtonName(radio) {
+    const button = document.getElementById('submitButton');
+    button.value = `Convert to ${radio.nextElementSibling.innerText}`; // Update button text
+  }
+</script>
 
 </html>

@@ -24,5 +24,7 @@ documentRouter.route('/excel_pdf').post(upload, documentController.excelToPdf)
 documentRouter.route('/pdf-to-excel').post(upload, documentController.pdfToExcel)
 documentRouter.route('/image_convert').post(upload, documentController.imageConvert)
 documentRouter.route('/spell_checker').post(upload, documentController.spellchecker)
+documentRouter.route('/pages_to_convert').post(upload, documentController.pageConvert)
+documentRouter.route('/merge_word').post(uploads, documentController.mergeWord)
 
 export default documentRouter

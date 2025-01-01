@@ -205,6 +205,30 @@ const documentController = {
     }
   },
 
+  pageConvert: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.pageConvert(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
+  mergeWord: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.mergeWord(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
 }
 
 export default documentController

@@ -15,3 +15,7 @@ export {
   correctSpelling,
   extractTextFromDocx
 } from './spell'
+
+export {
+  pagesConvert
+} from './pages'

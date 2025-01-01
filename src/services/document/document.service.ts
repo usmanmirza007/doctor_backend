@@ -1,5 +1,5 @@
 
-import { NextFunction, Response } from 'express';
+import { NextFunction } from 'express';
 
 let { exec } = require('child_process')
 import PDFMerger from 'pdf-merger-js'
@@ -15,9 +15,11 @@ import ExcelJS from 'exceljs'
 import PDFDocument from 'pdfkit'
 import pdfParse from 'pdf-parse'
 import sharp from 'sharp'
-// import docxConverter from 'docx-pdf'
 const docxConverter = require('docx-pdf');
-import { correctSpelling, extractTextFromDocx } from '../../utils';
+const DocxMerger = require('docx-merger');
+
+
+import { correctSpelling, extractTextFromDocx, pagesConvert } from '../../utils';
 
 const documentService = {
 
@@ -187,7 +189,7 @@ const documentService = {
 
         const inputWordPath = req.file.path
         const outputFilePath = `src/public/uploads/pdf_${Date.now()}.pdf`; // Output file
-        
+
         docxConverter(inputWordPath, outputFilePath, (err: any, result: any) => {
           if (err) {
             console.log('Error during conversion:', err);
@@ -762,6 +764,104 @@ const documentService = {
               console.log(`Deleted file: ${inputFilePath}`);
             }
           });
+        } catch (error) {
+          console.error(`An error occurred during conversion: ${error}`);
+        }
+      }
+
+    } catch (error) {
+      console.log('err', error);
+      next(error)
+    }
+  },
+
+  pageConvert: async (req: any, res: any, next: NextFunction) => {
+    try {
+      // brew install --cask libreoffice
+      if (req.file) {
+        const { imagetype } = req.body
+
+        const extention = imagetype
+        const inputPagePath = req.file.path
+        const outputFilePath = `src/public/uploads/corrected_${Date.now()}${extention}`;
+
+        try {
+          if (!req.file) {
+            return res.status(400).send('No file uploaded.');
+          }
+
+          pagesConvert(inputPagePath, outputFilePath, extention)
+
+
+          fs.unlink(inputPagePath, (err) => {
+            if (err) {
+              console.error(`Error deleting file ${inputPagePath}: ${err.message}`);
+            } else {
+              console.log(`Deleted file: ${inputPagePath}`);
+            }
+          });
+        } catch (error) {
+          console.error(`An error occurred during conversion: ${error}`);
+        }
+      }
+
+    } catch (error) {
+      console.log('err', error);
+      next(error)
+    }
+  },
+
+  mergeWord: async (req: any, res: any, next: NextFunction) => {
+    try {
+      // brew install --cask libreoffice
+      console.log('yoyoyoy');
+
+      if (req.files) {
+        console.log('fofofofo');
+
+
+        const extention = '.docx'
+        const inputPagePath = req.files
+        const outputFilePath = `src/public/uploads/merge_docs_${Date.now()}${extention}`;
+        // console.log(';inputPagePath[0].path', inputPagePath[0].path);
+
+        try {
+
+          // if (!req.files) {
+          //   return res.status(400).send('No file uploaded.');
+          // }
+          // return
+          // const file1 = fs.readFileSync(path.resolve(__dirname, 'src/public/uploads/test.docx'), { encoding: 'binary' });
+          // const file2 = fs.readFileSync(path.resolve(__dirname, 'src/public/uploads/test1.docx'), { encoding: 'binary' });
+            // console.log('file1', file1);
+            
+          // Merge DOCX files
+          const docx = new DocxMerger({}, ['src/public/uploads/test.docx', 'src/public/uploads/test1.docx']);
+
+          const inputPath = path.resolve(inputPagePath);
+          const outputPath = path.resolve(outputFilePath);
+          // var docx = new DocxMerger({}, [inputPath, outputPath]);
+
+
+          //SAVING THE DOCX FILE
+
+          docx.save('nodebuffer', function (data: any) {
+            // fs.writeFile("output.zip", data, function(err){/*...*/});
+            fs.writeFile("output.docx", data, function (err) {
+              
+            });
+            console.log('success');
+          });
+
+          // inputPagePath.forEach((filePath: string) => {
+          //   fs.unlink(filePath, (err) => {
+          //     if (err) {
+          //       console.error(`Error deleting file ${filePath}: ${err.message}`);
+          //     } else {
+          //       console.log(`Deleted file: ${filePath}`);
+          //     }
+          //   })
+          // });
         } catch (error) {
           console.error(`An error occurred during conversion: ${error}`);
         }
