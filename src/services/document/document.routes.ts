@@ -26,5 +26,7 @@ documentRouter.route('/image_convert').post(upload, documentController.imageConv
 documentRouter.route('/spell_checker').post(upload, documentController.spellchecker)
 documentRouter.route('/pages_to_convert').post(upload, documentController.pageConvert)
 documentRouter.route('/merge_word').post(uploads, documentController.mergeWord)
+documentRouter.route('/pdf_to_txt').post(upload, documentController.pdfToTxt)
+documentRouter.route('/word-to-html').post(upload, documentController.wordToHtml)
 
 export default documentRouter

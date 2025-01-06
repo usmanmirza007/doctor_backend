@@ -853,15 +853,81 @@ const documentService = {
             console.log('success');
           });
 
-          // inputPagePath.forEach((filePath: string) => {
-          //   fs.unlink(filePath, (err) => {
-          //     if (err) {
-          //       console.error(`Error deleting file ${filePath}: ${err.message}`);
-          //     } else {
-          //       console.log(`Deleted file: ${filePath}`);
-          //     }
-          //   })
-          // });
+
+  pdfToTxt: async (req: any, res: any, next: NextFunction) => {
+    try {
+
+      if (req.file) {
+
+        const extention = '.txt'
+        const inputPagePath = req.file.path
+        const outputFilePath = `src/public/uploads/txt_${Date.now()}${extention}`;
+        console.log('inputPagePath', inputPagePath);
+
+        try {
+
+          const inputPath = path.resolve(inputPagePath);
+          const outputPath = path.resolve(outputFilePath);
+          const dataBuffer = fs.readFileSync(path.resolve(inputPath));
+
+          const data = await pdfParse(dataBuffer);
+
+          fs.writeFileSync(outputPath, data.text);
+
+          console.log('PDF successfully converted to TXT:', outputPath);
+
+          fs.unlink(inputPagePath, (err) => {
+            if (err) {
+              console.error(`Error deleting file ${inputPagePath}: ${err.message}`);
+            } else {
+              console.log(`Deleted file: ${inputPagePath}`);
+            }
+          })
+        } catch (error) {
+          console.error(`An error occurred during conversion: ${error}`);
+        }
+      }
+
+    } catch (error) {
+      console.log('err', error);
+      next(error)
+    }
+  },
+
+  wordToHtml: async (req: any, res: any, next: NextFunction) => {
+    try {
+
+      if (req.file) {
+
+        const extention = '.html'
+        const inputPagePath = req.file.path
+        const outputFilePath = `src/public/uploads/txt_${Date.now()}${extention}`;
+        console.log('inputPagePath', inputPagePath);
+
+        try {
+
+          fs.readFile(inputPagePath, (err, data) => {
+            if (err) {
+              return console.log('Error reading file:', err);
+            }
+
+            // Convert DOCX to HTML
+            mammoth.convertToHtml({ buffer: data })
+              .then(result => {
+                console.log(result.value); // HTML content
+                fs.writeFileSync(outputFilePath, result.value);
+                console.log('Conversion successful!');
+              })
+              .catch(err => console.log('Conversion error:', err));
+          });
+
+          fs.unlink(inputPagePath, (err) => {
+            if (err) {
+              console.error(`Error deleting file ${inputPagePath}: ${err.message}`);
+            } else {
+              console.log(`Deleted file: ${inputPagePath}`);
+            }
+          })
         } catch (error) {
           console.error(`An error occurred during conversion: ${error}`);
         }

@@ -229,6 +229,30 @@ const documentController = {
     }
   },
 
+  pdfToTxt: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.pdfToTxt(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
+  wordToHtml: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.wordToHtml(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+  
 }
 
 export default documentController
