@@ -131,6 +131,14 @@
     <input type="file" name="file" accept=".docx" id="">
     <input type="submit" value="Merge Word">
   </form>
+  <form action="/api/document/pdf_to_txt" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".pdf" required id="">
+    <input type="submit" value="Pdf To Txt">
+  </form>
+  <form action="/api/document/word-to-html" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".docx" required id="">
+    <input type="submit" value="Word To HTML">
+  </form>
 </body>
 <script>
   function updateButtonName(radio) {
