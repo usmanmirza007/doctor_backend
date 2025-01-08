@@ -9,12 +9,12 @@ export const pagesConvert = (inputPagePath: string, outputFilePath: string, exte
   const outputPath = path.resolve(outputFilePath);
   const file = fs.readFileSync(inputPath);
 
-  libre.convert(file, ext, undefined, (err, done) => {
+  libre.convert(file, ext, undefined, (err: NodeJS.ErrnoException | null, data: Buffer): void => {
     if (err) {
       console.error(`Error converting file: ${err}`);
       return;
     }
-    fs.writeFileSync(outputPath, done);
+    fs.writeFileSync(outputPath, data);
     console.log('File successfully converted pages:', outputPath);
   });
 }

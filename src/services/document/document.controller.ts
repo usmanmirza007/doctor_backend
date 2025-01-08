@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import documentService from './document.service';
-;
 
 const documentController = {
 
@@ -217,18 +216,6 @@ const documentController = {
     }
   },
 
-  mergeWord: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      
-      const document = await documentService.mergeWord(req, res, next)
-
-    } catch (error) {
-      console.log('err', error);
-
-      return res.json(error)
-    }
-  },
-
   pdfToTxt: async (req: Request, res: Response, next: NextFunction) => {
     try {
       
@@ -252,7 +239,19 @@ const documentController = {
       return res.json(error)
     }
   },
-  
+
+  pdfToHtml: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.pdfToHtml(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
 }
 
 export default documentController

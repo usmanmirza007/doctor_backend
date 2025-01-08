@@ -4,7 +4,8 @@ export {
   NotFoundError,
   UnauthorizedError,
   BadRequestError,
-  SuccessResponse
+  SuccessResponse,
+  InternalServerError
 } from './customError'
 
 export {
@@ -19,3 +20,5 @@ export {
 export {
   pagesConvert
 } from './pages'
+
+export { fileDelete, existsFileSync } from './file'

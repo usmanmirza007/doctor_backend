@@ -44,3 +44,8 @@ export class ConflictError extends CustomError {
   }
 }
 
+export class InternalServerError extends CustomError {
+  constructor(message = 'Internal server error', details?: any) {
+    super(message, 500, details);
+  }
+}

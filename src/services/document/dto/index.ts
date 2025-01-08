@@ -1,0 +1,1 @@
+export { MulterRequest } from './document.dto'

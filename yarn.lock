@@ -1206,14 +1206,6 @@ dingbat-to-unicode@^1.0.1:
   resolved "https://registry.yarnpkg.com/dingbat-to-unicode/-/dingbat-to-unicode-1.0.1.tgz#5091dd673241453e6b5865e26e5a4452cdef5c83"
   integrity sha512-98l0sW87ZT58pU4i61wa2OHwxbiYSbuxsCBozaVnYX2iCnr3bLM3fIes1/ej7h1YdOKuKt/MLs706TVnALA65w==
 
-docx-merger@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/docx-merger/-/docx-merger-1.2.2.tgz#e0d0e5d334254f3bf54a35a761dc142e65fbdbf8"
-  integrity sha512-hHfswb8pxq/zsY59N+Keigie4xhfgNe4rDCFTQtcVoKOLAgG5aEz1a1fkG8VuGPS2vqCuxS9x5hxW6i1SPBbSw==
-  dependencies:
-    jszip "^2.6.1"
-    xmldom "^0.1.27"
-
 docx-pdf@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/docx-pdf/-/docx-pdf-0.0.1.tgz#96aa81574766e3708376802c0aff48420db0e4ba"
@@ -1993,13 +1985,6 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.4.0"
     verror "1.10.0"
-
-jszip@^2.6.1:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/jszip/-/jszip-2.7.0.tgz#c420b1e1aa800490724a0dd277e8cca950bc2c41"
-  integrity sha512-JIsRKRVC3gTRo2vM4Wy9WBC3TRcfnIZU8k65Phi3izkvPH975FowRYtKGT6PxevA0XnJ/yO8b0QwV0ydVyQwfw==
-  dependencies:
-    pako "~1.0.2"
 
 jszip@^3.10.1, jszip@^3.7.1:
   version "3.10.1"
@@ -3507,11 +3492,6 @@ xmlchars@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
-
-xmldom@^0.1.27:
-  version "0.1.31"
-  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.31.tgz#b76c9a1bd9f0a9737e5a72dc37231cf38375e2ff"
-  integrity sha512-yS2uJflVQs6n+CyjHoaBmVSqIDevTAWrzMmjG1Gc7h1qQ7uVozNhEPJAwZXWyGQ/Gafo3fCwrcaokezLPupVyQ==
 
 xtend@^4.0.0:
   version "4.0.2"

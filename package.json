@@ -17,7 +17,6 @@
     "crypto": "^1.0.1",
     "csvtojson": "^2.0.10",
     "docx": "^9.1.0",
-    "docx-merger": "^1.2.2",
     "docx-pdf": "^0.0.1",
     "dotenv": "^8.6.0",
     "exceljs": "^4.4.0",
