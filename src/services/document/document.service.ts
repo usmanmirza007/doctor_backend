@@ -14,6 +14,7 @@ import PDFMerger from 'pdf-merger-js'
 import shell, { ShellString } from 'shelljs'
 import { Document, Packer, Paragraph } from 'docx'
 import { ExecException } from 'child_process';
+import * as libre from 'libreoffice-convert';
 const docxConverter = require('docx-pdf');
 let { exec } = require('child_process')
 
@@ -23,6 +24,7 @@ import {
   pagesConvert, SuccessResponse
 } from '../../utils';
 import { MulterRequest } from './dto';
+import { convertExcel } from '../../utils/file';
 
 const documentService = {
 
@@ -600,30 +602,7 @@ const documentService = {
       if (!file) {
         throw new BadRequestError('Incomplet Parameter');
       }
-
-      const inputPdfPath = file.path
-      const outputFilePath = `src/public/uploads/excel_${Date.now()}.xlsx`;
-
-      if (!existsFileSync(inputPdfPath)) {
-        throw new BadRequestError('Uploaded file does not exist. Please try again.');
-      }
-
-      const dataBuffer = fs.readFileSync(inputPdfPath);
-      const data = await pdfParse(dataBuffer);
-
-      const text = data.text;
-      const rows = text.split('\n').map(row => row.split(/\s{2,}/));
-
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Sheet1');
-
-      rows.forEach(row => {
-        worksheet.addRow(row);
-      });
-
-      await workbook.xlsx.writeFile(outputFilePath);
-      console.log(`PDF successfully converted to Excel: ${outputFilePath}`);
-      fileDelete(inputPdfPath)
+      convertExcel(file.path)
       const success = new SuccessResponse('PDF to Excel convert has been successfully');
       return res.status(success.status).json({
         data: {
@@ -631,9 +610,8 @@ const documentService = {
           message: success.message,
         }
       });
-
     } catch (error) {
-      console.log('err', error);
+      console.log('err fof', error);
       next(error)
     }
   },
@@ -728,6 +706,7 @@ const documentService = {
       const req = request as MulterRequest;
       const { imagetype } = req.body
       const inputPagePath = req.file.path
+      // console.log('inputPagePath', inputPagePath);
 
       if (!inputPagePath || !imagetype) {
         throw new BadRequestError('Incomplet Parameter');
@@ -739,18 +718,13 @@ const documentService = {
       if (!existsFileSync(inputPagePath)) {
         throw new BadRequestError('Uploaded file does not exist. Please try again.');
       }
+      const outputPath = path.resolve(outputFilePath);
+      console.log(';dpdpdp', outputPath);
 
-      pagesConvert(inputPagePath, outputFilePath, extention)
+      const data = pagesConvert(inputPagePath, outputFilePath, extention, res)
+      console.log('fofofo', data);
 
       fileDelete(inputPagePath)
-
-      const success = new SuccessResponse(`Pages to ${extention} convert has been successfully`);
-      return res.status(success.status).json({
-        data: {
-          status: success.status,
-          message: success.message,
-        }
-      });
 
     } catch (error) {
       console.log('err', error);
@@ -861,53 +835,31 @@ const documentService = {
       if (!existsFileSync(inputPagePath)) {
         throw new BadRequestError('Uploaded file does not exist. Please try again.');
       }
-      console.log('inputPagePath', inputPagePath);
 
-      // pdf2html.html(inputPagePath, (err: any, html: any) => {
-      //   if (err) {
-      //     console.error('Error: ofofo', err);
-      //     return;
-      //   }
+      const inputPath = path.resolve(inputPagePath);
+      const outputPath = path.resolve(outputFilePath);
 
-      //   fs.writeFileSync(outputFilePath, html);
-      //   console.log('Conversion successful!');
-      // });
-      // fs.unlink(inputPagePath, (err) => {
-      //   if (err) {
-      //     console.error(`Error deleting file ${inputPagePath}: ${err.message}`);
-      //   } else {
-      //     console.log(`Deleted file: ${inputPagePath}`);
-      //   }
-      // })
-      // const command = `pdf2htmlex ${inputPagePath} ${outputFilePath}`;
-      const command = `/usr/local/bin/pdf2htmlex ${inputPagePath} ${outputFilePath}`;
+      const file1 = fs.readFileSync(inputPath);
 
-      console.log(`Executing: ${command}`);
-
-      // Execute command
-      exec(command, (error: ExecException | null, stdout: string, stderr: string) => {
-        if (error || stderr) {
-          const errorMessage = error?.message || stderr;
-          throw new InternalServerError(`Failed to encrypt PDF: ${errorMessage}`);
+      libre.convert(file1, '.html', undefined, (err: NodeJS.ErrnoException | null, data: Buffer): void => {
+        if (err) {
+          console.error(`Error converting PDF to HTML: ${err}`);
+          return;
         }
 
-        console.log('Conversion successful!');
-        res.download(outputFilePath, (err: any) => {
-          if (err) {
-            console.error('Download Error:', err);
-          }
+        fs.writeFileSync(outputPath, data);
+        fileDelete(inputPagePath)
 
-          fileDelete(inputPagePath)
-
-        });
-        const success = new SuccessResponse(`PDF to HTML convert has been successfully`);
-        return res.status(success.status).json({
-          data: {
-            status: success.status,
-            message: success.message,
-          }
-        });
+        console.log('PDF successfully converted to HTML:', outputPath);
       });
+      const success = new SuccessResponse(`PDF to HTML convert has been successfully`);
+      return res.status(success.status).json({
+        data: {
+          status: success.status,
+          message: success.message,
+        }
+      });
+
 
 
     } catch (error) {

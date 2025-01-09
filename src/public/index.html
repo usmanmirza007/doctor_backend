@@ -13,21 +13,25 @@
     <input type="password" name="password" placeholder="Enter password" required id="">
     <input type="submit" value="Encrypt PDF">
   </form>
+  <br>
   <form action="/api/document/decrypt_pdf" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".pdf" required id="">
     <input type="password" name="password" placeholder="Enter password" required id="">
     <input type="submit" value="Decrypt PDF">
   </form>
+  <br>
   <form action="/api/document/image_to_pdf" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept="image/*" required id="">
     <input type="file" name="file" accept="image/*" required id="">
     <input type="submit" value="Image To PDF">
   </form>
+  <br>
   <form action="/api/document/merge_pdf" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".pdf" required id="">
     <input type="file" name="file" accept=".pdf" required id="">
     <input type="submit" value="Merge PDF">
   </form>
+  <br>
   <form action="/api/document/csv_to_json" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".csv" required id="">
     <input type="submit" value="Csv To Json">
@@ -36,34 +40,42 @@
     <input type="file" name="file" accept=".json" required id="">
     <input type="submit" value="Json To Csv">
   </form>
+  <br>
   <form action="/api/document/excel_to_json" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".xlsx" required id="">
     <input type="submit" value="Excel To Json">
   </form>
+  <br>
   <form action="/api/document/json_to_excel" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".json" required id="">
     <input type="submit" value="Json To Excel">
   </form>
+  <br>
   <form action="/api/document/word_to_txt" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".docx" required id="">
     <input type="submit" value="Word To Txt">
   </form>
+  <br>
   <form action="/api/document/txt_to_word" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".txt" required id="">
     <input type="submit" value="Txt To Word">
   </form>
+  <br>
   <form action="/api/document/compress_pdf" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".pdf" required id="">
     <input type="submit" value="Compress PDF">
   </form>
+  <br>
   <form action="/api/document/excel_pdf" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".xlsx" required id="">
     <input type="submit" value="Excel To PDF">
   </form>
+  <br>
   <form action="/api/document/pdf-to-excel" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".pdf" required id="">
     <input type="submit" value="PDF To Excel">
   </form>
+  <br>
   <form action="/api/document/image_convert" method="post" enctype="multipart/form-data">
     <label for="file">Upload File:</label>
     <input type="file" name="file" accept="image/*" required>
@@ -89,16 +101,19 @@
     <!-- Submit Button -->
     <input type="submit" value="Image Convert">
   </form>
+  <br>
   <form action="/api/document/spell_checker" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".docx" required id="">
     <input type="submit" value="Spell Checker">
   </form>
+  <br>
   <form action="/api/document/word_to_pdf" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".docx" required id="">
     <input type="submit" value="Word To Pdf">
   </form>
+  <br>
   <form action="/api/document/pages_to_convert" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" required id="">
+    <input type="file" name="file" accept=".pages" required id="">
     <br><br>
 
     <!-- Radio Buttons for Image Type -->
@@ -116,29 +131,40 @@
     <label for="gif">PDF</label><br>
 
     <input type="radio" id="tiff" name="imagetype" value=".txt" required onchange="updateButtonName(this)">
-    <label for="tiff">TXT</label><br><br>
+    <label for="tiff">TXT</label><br>
+
+    <input type="radio" id="tiff" name="imagetype" value=".text" required onchange="updateButtonName(this)">
+    <label for="tiff">TEXT</label><br>
 
     <input type="radio" id="tiff" name="imagetype" value=".epub" required onchange="updateButtonName(this)">
-    <label for="tiff">EPUB</label><br><br>
+    <label for="tiff">EPUB</label><br>
 
+    <input type="radio" id="tiff" name="imagetype" value=".pdf" required onchange="updateButtonName(this)">
+    <label for="tiff">Excel</label><br>
     <input type="radio" id="tiff" name="imagetype" value=".doc" required onchange="updateButtonName(this)">
-    <label for="tiff">DOC</label><br><br>
+    <label for="tiff">DOC</label><br>
+    <input type="radio" id="tiff" name="imagetype" value=".docx" required onchange="updateButtonName(this)">
+    <label for="tiff">DOCX</label><br><br>
 
-    <input type="submit" id="submitButton" value="Convert File">
+    <input type="submit" id="submitButton" value="Page Convert To">
   </form>
+  <br>
   <form action="/api/document/merge_word" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".docx" id="">
     <input type="file" name="file" accept=".docx" id="">
     <input type="submit" value="Merge Word">
   </form>
+  <br>
   <form action="/api/document/pdf_to_txt" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".pdf" required id="">
     <input type="submit" value="Pdf To Txt">
   </form>
+  <br>
   <form action="/api/document/word-to-html" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".docx" required id="">
     <input type="submit" value="Word To HTML">
   </form>
+  <br>
   <form action="/api/document/pdf-to-html" method="post" enctype="multipart/form-data">
     <input type="file" name="file" accept=".pdf" required id="">
     <input type="submit" value="Pdf To HTML">
@@ -147,7 +173,7 @@
 <script>
   function updateButtonName(radio) {
     const button = document.getElementById('submitButton');
-    button.value = `Convert to ${radio.nextElementSibling.innerText}`; // Update button text
+    button.value = `Page Convert To ${radio.nextElementSibling.innerText}`; // Update button text
   }
 </script>
 

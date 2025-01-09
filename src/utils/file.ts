@@ -1,4 +1,8 @@
 import fs from 'fs';
+import PdfParse from 'pdf-parse';
+import { BadRequestError } from './customError';
+import ExcelJS from 'exceljs'
+
 
 const unlinkFile = (inputfile: string) => {
   fs.unlink(inputfile, (err: NodeJS.ErrnoException | null) => {
@@ -34,4 +38,35 @@ export const existsFileSync = (inputfile: Array<string> | string): boolean => {
   }
 
   return false;
+}
+
+export const convertExcel = async (inputPdfPath: string) => {
+
+  try {
+    const outputFilePath = `src/public/uploads/excel_${Date.now()}.xlsx`;
+
+    if (!existsFileSync(inputPdfPath)) {
+      throw new BadRequestError('Uploaded file does not exist. Please try again.');
+    }
+
+    const dataBuffer = fs.readFileSync(inputPdfPath);
+    const data = await PdfParse(dataBuffer);
+
+    const text = data.text;
+    const rows = text.split('\n').map(row => row.split(/\s{2,}/));
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
+
+    rows.forEach(row => {
+      worksheet.addRow(row);
+    });
+
+    await workbook.xlsx.writeFile(outputFilePath);
+    console.log(`PDF successfully converted to Excel: ${outputFilePath}`);
+    fileDelete(inputPdfPath)
+  } catch (error) {
+    console.log('err', error);
+
+  }
 }
