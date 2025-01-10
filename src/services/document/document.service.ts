@@ -12,11 +12,12 @@ import PDFDocument from 'pdfkit'
 import { Parser } from 'json2csv'
 import PDFMerger from 'pdf-merger-js'
 import shell, { ShellString } from 'shelljs'
-import { Document, Packer, Paragraph } from 'docx'
+import { Document, Packer, Paragraph, TextRun } from 'docx'
 import { ExecException } from 'child_process';
 import * as libre from 'libreoffice-convert';
 const docxConverter = require('docx-pdf');
 let { exec } = require('child_process')
+import { PDFDocument as PDFDocuments } from 'pdf-lib';
 
 import {
   BadRequestError, correctSpelling, existsFileSync,
@@ -146,50 +147,59 @@ const documentService = {
 
   pdfToWord: async (request: Request, res: Response, next: NextFunction) => {
     try {
-      const { files } = request as MulterRequest;
+      const req = request as MulterRequest;
+      const inputfile = req.file.path
 
-      if (!files) {
+      if (!inputfile) {
         throw new BadRequestError('Incomplet Parameter');
       }
 
-      const filePathsArg = files.map((item: any) => item.path)
-      const inputFilePath = filePathsArg.join(' ');
+      // const filePathsArg = files.map((item: any) => item.path)
+      // const inputFilePath = filePathsArg.join(' ');
       const outputFilePath = `src/public/uploads/${Date.now()}.docx`;
 
-      if (!existsFileSync(filePathsArg)) {
+      if (!existsFileSync(inputfile)) {
         throw new BadRequestError('Uploaded file does not exist. Please try again.');
       }
+      const pdfBuffer = fs.readFileSync(inputfile);
+      const pdfData = await pdfParse(pdfBuffer);
 
-      // exec(`python src/services/document/python/pdfToWord.py ${inputFilePath} ${outputFilePath}`, (error: any, stdout: any, stderr: any) => {
-      //   if (error) {
-      //     console.error(`Error executing Python script: ${error.message}`);
-      //     return;
-      //   }
-      //   if (stderr) {
-      //     console.error(`stderr: ${stderr}`);
-      //     return;
-      //   }
-
-      //   console.log(`Python script output: ${stdout}`);
-      //   // Delete the uploaded image files after PDF generation
-      //   filePathsArg.forEach((filePath: string) => {
-      //     fs.unlink(filePath, (err) => {
-      //       if (err) {
-      //         console.error(`Error deleting file ${filePath}: ${err.message}`);
-      //       } else {
-      //         console.log(`Deleted file: ${filePath}`);
-      //       }
-      //     });
-      //   });
-      // });
-      // Check if input PDF exists
-      if (!fs.existsSync(inputFilePath)) {
-        console.error(`Error: Input PDF file '${inputFilePath}' does not exist.`);
-        process.exit(2);
-      }
+      const paragraphs = pdfData.text
+      .split('\n') // Split text into lines
+      .map((line) => {
+        const isHeading = line.trim().length > 0 && line.trim().length < 50; // Example logic: short lines are headings
+        return new Paragraph({
+            children: [
+                new TextRun({
+                  text: line,
+                  bold: isHeading, // Bold for headings
+                  size: isHeading ? 22 : 18, // Font size (in half-points, 24 = 12pt font)
+                  font: "Arial",
+                }),
+            ],
+        });
+      });
 
 
-
+      const doc = new Document({
+        sections: [
+          {
+            properties: {},
+            children: paragraphs,
+          },
+        ],
+      });
+  
+      const docBuffer = await Packer.toBuffer(doc);
+      fs.writeFileSync(outputFilePath, docBuffer);
+      fileDelete(inputfile)
+      const success = new SuccessResponse('PDF to word convert has been successfully');
+      return res.status(success.status).json({
+        data: {
+          status: success.status,
+          message: success.message,
+        }
+      });
     } catch (error) {
       console.log('err', error);
       next(error)
@@ -718,8 +728,9 @@ const documentService = {
       if (!existsFileSync(inputPagePath)) {
         throw new BadRequestError('Uploaded file does not exist. Please try again.');
       }
+
       const outputPath = path.resolve(outputFilePath);
-      console.log(';dpdpdp', outputPath);
+      console.log(';dpdpdp', inputPagePath);
 
       const data = pagesConvert(inputPagePath, outputFilePath, extention, res)
       console.log('fofofo', data);
