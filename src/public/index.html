@@ -171,6 +171,14 @@
     <input type="file" name="file" accept=".pdf" required id="">
     <input type="submit" value="Pdf To HTML">
   </form>
+  <br>
+  <form action="/api/document/pdf-to-powerpoint" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".pdf" id="">
+    <input type="file" name="file" accept=".pdf" id="">
+    <input type="file" name="file" accept=".pdf" id="">
+    <input type="file" name="file" accept=".pdf" id="">
+    <input type="submit" value="Pdf To PowerPoint">
+  </form>
 </body>
 <script>
   function updateButtonName(radio) {

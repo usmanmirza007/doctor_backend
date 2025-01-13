@@ -9,7 +9,7 @@ export {
 } from './customError'
 
 export {
-  stroage
+  storage
 } from './multer'
 
 export {

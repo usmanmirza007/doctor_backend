@@ -1,11 +1,36 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import documentController from './document.controller';
 import multer from 'multer';
-import { stroage } from '../../utils';
+import { storage } from '../../utils';
+
 
 export const documentRouter = express.Router();
-const upload = multer({ storage: stroage }).single('file')
-const uploads = multer({ storage: stroage }).array('file', 2)
+const upload = multer({ storage: storage }).single('file')
+const uploads = multer({ storage: storage }).array('file', 2)
+
+function dynamicFileCount(req: Request, res: Response, next: NextFunction) {
+  // Determine the file count dynamically, e.g., from the request body or query
+  if (Array.isArray(req.files) && req.files.length) {
+    const fileCount = req.files?.length // Default to 2 if not provided
+    // Call the multer upload middleware
+    const upload = multer({ storage: storage }).array('file', fileCount);
+    upload(req, res, function (err) {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      next();
+    });
+  } else {
+    const upload = multer({ storage: storage }).single('file')
+    upload(req, res, function (err) {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      next();
+    });
+
+  }
+}
 
 documentRouter.route('/encrypt_pdf').post(upload, documentController.encryptPDF)
 documentRouter.route('/decrypt_pdf').post(upload, documentController.decryptPDF)
@@ -28,5 +53,6 @@ documentRouter.route('/pages_to_convert').post(upload, documentController.pageCo
 documentRouter.route('/pdf_to_txt').post(upload, documentController.pdfToTxt)
 documentRouter.route('/word-to-html').post(upload, documentController.wordToHtml)
 documentRouter.route('/pdf-to-html').post(upload, documentController.pdfToHtml)
+documentRouter.route('/pdf-to-powerpoint').post(dynamicFileCount, documentController.pdfToPowerPoint)
 
 export default documentRouter

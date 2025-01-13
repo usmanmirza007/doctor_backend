@@ -252,6 +252,18 @@ const documentController = {
     }
   },
 
+  pdfToPowerPoint: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      
+      const document = await documentService.pdfToPowerPoint(req, res, next)
+
+    } catch (error) {
+      console.log('err', error);
+
+      return res.json(error)
+    }
+  },
+
 }
 
 export default documentController

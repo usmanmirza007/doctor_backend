@@ -379,6 +379,13 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.63.tgz#1788fa8da838dbb5f9ea994b834278205db6ca2b"
   integrity sha512-fAtCfv4jJg+ExtXhvCkCqUKZ+4ok/JQk01qDKhL5BDDoS3AxKXhV5/MAVUZyQnSEd2GT92fkgZl0pz0Q0AzcIQ==
 
+"@types/node@^18.7.3":
+  version "18.19.70"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.19.70.tgz#5a77508f5568d16fcd3b711c8102d7a430a04df7"
+  integrity sha512-RE+K0+KZoEpDUbGGctnGdkrLFwi1eYKTlIHNl2Um98mUkGsm1u2Ff6Ltd0e8DktTtC98uy7rSj+hO8t/QuLoVQ==
+  dependencies:
+    undici-types "~5.26.4"
+
 "@types/node@^22.7.5":
   version "22.10.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.2.tgz#a485426e6d1fdafc7b0d4c7b24e2c78182ddabb9"
@@ -1803,6 +1810,11 @@ https-proxy-agent@^5.0.0:
     agent-base "6"
     debug "4"
 
+https@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/https/-/https-1.0.0.tgz#3c37c7ae1a8eeb966904a2ad1e975a194b7ed3a4"
+  integrity sha512-4EC57ddXrkaF0x83Oj8sM6SLQHAWXw90Skqu2M4AEWENZ3F02dFJE/GARA8igO79tcgYqGrD7ae4f5L3um2lgg==
+
 iconv-lite@0.4.24:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
@@ -1819,6 +1831,13 @@ image-size@^0.9.7:
   version "0.9.7"
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.9.7.tgz#43b4ead4b1310d5ae310a559d52935a347e47c09"
   integrity sha512-KRVgLNZkr00YGN0qn9MlIrmlxbRhsCcEb1Byq3WKGnIV4M48iD185cprRtaoK4t5iC+ym2Q5qlArxZ/V1yzDgA==
+  dependencies:
+    queue "6.0.2"
+
+image-size@^1.0.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/image-size/-/image-size-1.2.0.tgz#312af27a2ff4ff58595ad00b9344dd684c910df6"
+  integrity sha512-4S8fwbO6w3GeCVN6OPtA9I5IGKkcDMPcKndtUlpJuCwu7JLjtj7JZpwqLuyY2nrmQT3AWsCJLSKPsc2mPBSl3w==
   dependencies:
     queue "6.0.2"
 
@@ -2686,6 +2705,16 @@ png-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/png-js/-/png-js-1.0.0.tgz#e5484f1e8156996e383aceebb3789fd75df1874d"
   integrity sha512-k+YsbhpA9e+EFfKjTCH3VW6aoKlyNYI6NYdTfDL4CIvFnvsuO84ttonmZE7rc+v23SLTH8XX+5w/Ak9v0xGY4g==
 
+pptxgenjs@^3.12.0:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/pptxgenjs/-/pptxgenjs-3.12.0.tgz#dc31baa53bb97aa69bc8ef8a906220fedc31489a"
+  integrity sha512-ZozkYKWb1MoPR4ucw3/aFYlHkVIJxo9czikEclcUVnS4Iw/M+r+TEwdlB3fyAWO9JY1USxJDt0Y0/r15IR/RUA==
+  dependencies:
+    "@types/node" "^18.7.3"
+    https "^1.0.0"
+    image-size "^1.0.0"
+    jszip "^3.7.1"
+
 process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
@@ -3294,6 +3323,11 @@ underscore@^1.13.1:
   version "1.13.7"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.13.7.tgz#970e33963af9a7dda228f17ebe8399e5fbe63a10"
   integrity sha512-GMXzWtsc57XAtguZgaQViUOzs0KTkk8ojr3/xAxXLITqf/3EMwxC0inyETfDFjH/Krbhuep0HNbbjI9i/q3F3g==
+
+undici-types@~5.26.4:
+  version "5.26.5"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-5.26.5.tgz#bcd539893d00b56e964fd2657a4866b221a65617"
+  integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
 
 undici-types@~6.19.2:
   version "6.19.8"

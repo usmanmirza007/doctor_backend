@@ -10,11 +10,8 @@ import http from "http";
 import multer from 'multer'
 import services from "./services";
 import { errorHandler, responseHandler } from "./middleware";
-import { stroage } from "./utils";
 
 const app = express();
-
-var upload = multer({ storage: stroage }).single('file')
 
 export async function init() {
   const PORT = process.env.PORT;

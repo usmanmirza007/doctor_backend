@@ -17,6 +17,7 @@ import { ExecException } from 'child_process';
 import * as libre from 'libreoffice-convert';
 const docxConverter = require('docx-pdf');
 let { exec } = require('child_process')
+const PptxGenJs = require('pptxgenjs');
 import { PDFDocument as PDFDocuments } from 'pdf-lib';
 
 import {
@@ -165,20 +166,20 @@ const documentService = {
       const pdfData = await pdfParse(pdfBuffer);
 
       const paragraphs = pdfData.text
-      .split('\n') // Split text into lines
-      .map((line) => {
-        const isHeading = line.trim().length > 0 && line.trim().length < 50; // Example logic: short lines are headings
-        return new Paragraph({
+        .split('\n') // Split text into lines
+        .map((line) => {
+          const isHeading = line.trim().length > 0 && line.trim().length < 50; // Example logic: short lines are headings
+          return new Paragraph({
             children: [
-                new TextRun({
-                  text: line,
-                  bold: isHeading, // Bold for headings
-                  size: isHeading ? 22 : 18, // Font size (in half-points, 24 = 12pt font)
-                  font: "Arial",
-                }),
+              new TextRun({
+                text: line,
+                bold: isHeading, // Bold for headings
+                size: isHeading ? 22 : 18, // Font size (in half-points, 24 = 12pt font)
+                font: "Arial",
+              }),
             ],
+          });
         });
-      });
 
 
       const doc = new Document({
@@ -189,7 +190,7 @@ const documentService = {
           },
         ],
       });
-  
+
       const docBuffer = await Packer.toBuffer(doc);
       fs.writeFileSync(outputFilePath, docBuffer);
       fileDelete(inputfile)
@@ -872,6 +873,93 @@ const documentService = {
       });
 
 
+
+    } catch (error) {
+      console.log('err', error);
+      next(error)
+    }
+  },
+
+  pdfToPowerPoint: async (request: Request, res: Response, next: NextFunction) => {
+    try {
+      const { file } = request as MulterRequest;
+      
+      if (!file) {
+        throw new BadRequestError('Incomplet Parameter');
+      }
+
+      const extention = '.pptx'
+      const inputPagePath = file.path
+      const outputFilePath = `src/public/uploads/power_${Date.now()}${extention}`;
+
+      if (!existsFileSync(inputPagePath)) {
+        throw new BadRequestError('Uploaded file does not exist. Please try again.');
+      }
+      // Read the PDF file
+      const pdfBuffer = fs.readFileSync(inputPagePath);
+
+      // Extract text from the PDF
+      const pdfData = await pdfParse(pdfBuffer);
+      // const pdfDoc = await PDFDocuments.load(pdfBuffer);
+
+      // console.log('fofof',pdfData.numpages, pdfData.text);
+      
+      // Create a new PowerPoint presentation
+      const ppt = new PptxGenJs();
+
+      // Split the PDF text into pages
+      
+      // Create a slide for each page
+      for (let i = 0; i < pdfData.numpages; i++) {
+        // const page = pdfDoc.getPage(i);
+        // console.log('page',page);
+
+        const pages = pdfData.text.split('\f'); // '\f' represents page breaks in PDF text
+
+        // Extract text from the page
+        // const textContent = page.getTextContent ? await page.getTextContent() : ''; // Replace this with actual page content fetching logic
+        // const pageText = textContent.items.map((item: any) => item.str).join(' '); // Join the extracted text
+
+        // Create a new slide for the page
+        // const slide = ppt.addSlide();
+        pages.forEach((pageText, index) => {
+          // Create a new slide
+          const slide = ppt.addSlide();
+  
+          // Add the page text to the slide
+          slide.addText(pageText.trim(), {
+              x: 0.5, // X position
+              y: 0.5, // Y position
+              w: '90%', // Width of the text box
+              h: '80%', // Height of the text box
+              fontSize: 18, // Font size
+              color: '000000', // Black text
+              align: 'left', // Align text to the left
+          });
+  
+          // Add a footer with the page number
+          slide.addText(`Page ${index + 1}`, {
+              x: 7, // X position
+              y: 6.5, // Y position
+              fontSize: 10, // Font size
+              color: '666666', // Gray text
+              align: 'right', // Align text to the right
+          });
+      });
+    }
+
+      // Save the PowerPoint presentation
+      await ppt.writeFile({ fileName: outputFilePath });
+      fileDelete(inputPagePath)
+      console.log(`Converted PDF to PowerPoint: ${outputFilePath}`);
+
+      const success = new SuccessResponse(`PDF to HTML convert has been successfully`);
+      return res.status(success.status).json({
+        data: {
+          status: success.status,
+          message: success.message,
+        }
+      });
 
     } catch (error) {
       console.log('err', error);
