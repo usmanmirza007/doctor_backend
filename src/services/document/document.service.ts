@@ -795,35 +795,46 @@ const documentService = {
       const extention = '.html'
       const inputWordPath = file.path
       const outputFilePath = `src/public/uploads/txt_${Date.now()}${extention}`;
-
+  
       if (!existsFileSync(inputWordPath)) {
         throw new BadRequestError('Uploaded file does not exist. Please try again.');
       }
 
-      fs.readFile(inputWordPath, (err, data) => {
-        if (err) {
-          return console.log('Error reading file:', err);
-        }
+      // const command = `libreoffice --headless --convert-to html "${inputWordPath}" --outdir "${path.dirname(outputFilePath)}"`;
+      const command = `soffice --headless --convert-to html "${inputWordPath}" --outdir "${path.dirname(outputFilePath)}"`;
 
-        mammoth.convertToHtml({ buffer: data })
-          .then(result => {
-            console.log(result.value);
-            fs.writeFileSync(outputFilePath, result.value);
-            fileDelete(inputWordPath)
-            console.log('Conversion successful!');
-            const success = new SuccessResponse(`Word to HTML convert has been successfully`);
-            return res.status(success.status).json({
-              data: {
-                status: success.status,
-                message: success.message,
-              }
-            });
-          })
-          .catch(err => {
-            console.log('Conversion error:', err)
-            next(err)
-          });
+
+      exec(command, (error: any, stdout: any, stderr: any) => {
+        if (error) {
+          console.error('Conversion error:', error);
+          return;
+        }
+        console.log('Conversion successful!', stdout);
       });
+      // fs.readFile(inputWordPath, (err, data) => {
+      //   if (err) {
+      //     return console.log('Error reading file:', err);
+      //   }
+
+      //   mammoth.convertToHtml({ buffer: data })
+      //     .then(result => {
+      //       console.log(result.value);
+      //       fs.writeFileSync(outputFilePath, result.value);
+      //       fileDelete(inputWordPath)
+      //       console.log('Conversion successful!');
+      //       const success = new SuccessResponse(`Word to HTML convert has been successfully`);
+      //       return res.status(success.status).json({
+      //         data: {
+      //           status: success.status,
+      //           message: success.message,
+      //         }
+      //       });
+      //     })
+      //     .catch(err => {
+      //       console.log('Conversion error:', err)
+      //       next(err)
+      //     });
+      // });
 
 
 
@@ -839,10 +850,17 @@ const documentService = {
       if (!file) {
         throw new BadRequestError('Incomplet Parameter');
       }
+      // brew install poppler
+
 
       const extention = '.html'
       const inputPagePath = file.path
       const outputFilePath = `src/public/uploads/txt_${Date.now()}${extention}`;
+      const outputDir = path.dirname(outputFilePath);
+      const baseName = path.basename(outputFilePath, '.html');
+
+      // const outputDir = path.dirname(outputFilePath);
+      // const baseName = path.basename(outputFilePath, '.html');
 
       if (!existsFileSync(inputPagePath)) {
         throw new BadRequestError('Uploaded file does not exist. Please try again.');
@@ -851,19 +869,29 @@ const documentService = {
       const inputPath = path.resolve(inputPagePath);
       const outputPath = path.resolve(outputFilePath);
 
-      const file1 = fs.readFileSync(inputPath);
+      const command = `pdftohtml -c -s -noframes "${inputPagePath}" "${outputDir}/${baseName}"`;
 
-      libre.convert(file1, '.html', undefined, (err: NodeJS.ErrnoException | null, data: Buffer): void => {
-        if (err) {
-          console.error(`Error converting PDF to HTML: ${err}`);
+
+      exec(command, (error: any, stdout: any, stderr: any) => {
+        if (error) {
+          console.error('Conversion error:', error);
           return;
         }
-
-        fs.writeFileSync(outputPath, data);
-        fileDelete(inputPagePath)
-
-        console.log('PDF successfully converted to HTML:', outputPath);
+        console.log('Conversion successful!', stdout);
       });
+      // const file1 = fs.readFileSync(inputPath);
+
+      // libre.convert(file1, '.html', undefined, (err: NodeJS.ErrnoException | null, data: Buffer): void => {
+      //   if (err) {
+      //     console.error(`Error converting PDF to HTML: ${err}`);
+      //     return;
+      //   }
+
+      //   fs.writeFileSync(outputPath, data);
+      //   fileDelete(inputPagePath)
+
+      //   console.log('PDF successfully converted to HTML:', outputPath);
+      // });
       const success = new SuccessResponse(`PDF to HTML convert has been successfully`);
       return res.status(success.status).json({
         data: {
@@ -883,7 +911,7 @@ const documentService = {
   pdfToPowerPoint: async (request: Request, res: Response, next: NextFunction) => {
     try {
       const { file } = request as MulterRequest;
-      
+
       if (!file) {
         throw new BadRequestError('Incomplet Parameter');
       }
@@ -903,12 +931,12 @@ const documentService = {
       // const pdfDoc = await PDFDocuments.load(pdfBuffer);
 
       // console.log('fofof',pdfData.numpages, pdfData.text);
-      
+
       // Create a new PowerPoint presentation
       const ppt = new PptxGenJs();
 
       // Split the PDF text into pages
-      
+
       // Create a slide for each page
       for (let i = 0; i < pdfData.numpages; i++) {
         // const page = pdfDoc.getPage(i);
@@ -925,28 +953,28 @@ const documentService = {
         pages.forEach((pageText, index) => {
           // Create a new slide
           const slide = ppt.addSlide();
-  
+
           // Add the page text to the slide
           slide.addText(pageText.trim(), {
-              x: 0.5, // X position
-              y: 0.5, // Y position
-              w: '90%', // Width of the text box
-              h: '80%', // Height of the text box
-              fontSize: 18, // Font size
-              color: '000000', // Black text
-              align: 'left', // Align text to the left
+            x: 0.5, // X position
+            y: 0.5, // Y position
+            w: '90%', // Width of the text box
+            h: '80%', // Height of the text box
+            fontSize: 18, // Font size
+            color: '000000', // Black text
+            align: 'left', // Align text to the left
           });
-  
+
           // Add a footer with the page number
           slide.addText(`Page ${index + 1}`, {
-              x: 7, // X position
-              y: 6.5, // Y position
-              fontSize: 10, // Font size
-              color: '666666', // Gray text
-              align: 'right', // Align text to the right
+            x: 7, // X position
+            y: 6.5, // Y position
+            fontSize: 10, // Font size
+            color: '666666', // Gray text
+            align: 'right', // Align text to the right
           });
-      });
-    }
+        });
+      }
 
       // Save the PowerPoint presentation
       await ppt.writeFile({ fileName: outputFilePath });
