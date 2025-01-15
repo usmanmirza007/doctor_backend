@@ -22,3 +22,5 @@ export {
 } from './pages'
 
 export { fileDelete, existsFileSync } from './file'
+
+export { tokenModule } from './token'
