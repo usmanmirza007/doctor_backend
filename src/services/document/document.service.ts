@@ -12,13 +12,11 @@ import PDFDocument from 'pdfkit'
 import { Parser } from 'json2csv'
 import PDFMerger from 'pdf-merger-js'
 import shell, { ShellString } from 'shelljs'
-import { Document, Packer, Paragraph, TextRun } from 'docx'
+import { Document, Packer, Paragraph } from 'docx'
 import { ExecException } from 'child_process';
-import * as libre from 'libreoffice-convert';
 const docxConverter = require('docx-pdf');
 let { exec } = require('child_process')
 const PptxGenJs = require('pptxgenjs');
-import { PDFDocument as PDFDocuments } from 'pdf-lib';
 
 import {
   BadRequestError, correctSpelling, existsFileSync,
@@ -165,34 +163,6 @@ const documentService = {
       const pdfBuffer = fs.readFileSync(inputfile);
       const pdfData = await pdfParse(pdfBuffer);
 
-      const paragraphs = pdfData.text
-        .split('\n') // Split text into lines
-        .map((line) => {
-          const isHeading = line.trim().length > 0 && line.trim().length < 50; // Example logic: short lines are headings
-          return new Paragraph({
-            children: [
-              new TextRun({
-                text: line,
-                bold: isHeading, // Bold for headings
-                size: isHeading ? 22 : 18, // Font size (in half-points, 24 = 12pt font)
-                font: "Arial",
-              }),
-            ],
-          });
-        });
-
-
-      const doc = new Document({
-        sections: [
-          {
-            properties: {},
-            children: paragraphs,
-          },
-        ],
-      });
-
-      const docBuffer = await Packer.toBuffer(doc);
-      fs.writeFileSync(outputFilePath, docBuffer);
       fileDelete(inputfile)
       const success = new SuccessResponse('PDF to word convert has been successfully');
       return res.status(success.status).json({
@@ -795,14 +765,12 @@ const documentService = {
       const extention = '.html'
       const inputWordPath = file.path
       const outputFilePath = `src/public/uploads/txt_${Date.now()}${extention}`;
-  
+
       if (!existsFileSync(inputWordPath)) {
         throw new BadRequestError('Uploaded file does not exist. Please try again.');
       }
 
-      // const command = `libreoffice --headless --convert-to html "${inputWordPath}" --outdir "${path.dirname(outputFilePath)}"`;
       const command = `soffice --headless --convert-to html "${inputWordPath}" --outdir "${path.dirname(outputFilePath)}"`;
-
 
       exec(command, (error: any, stdout: any, stderr: any) => {
         if (error) {
@@ -810,33 +778,15 @@ const documentService = {
           return;
         }
         console.log('Conversion successful!', stdout);
+        fileDelete(inputWordPath)
       });
-      // fs.readFile(inputWordPath, (err, data) => {
-      //   if (err) {
-      //     return console.log('Error reading file:', err);
-      //   }
-
-      //   mammoth.convertToHtml({ buffer: data })
-      //     .then(result => {
-      //       console.log(result.value);
-      //       fs.writeFileSync(outputFilePath, result.value);
-      //       fileDelete(inputWordPath)
-      //       console.log('Conversion successful!');
-      //       const success = new SuccessResponse(`Word to HTML convert has been successfully`);
-      //       return res.status(success.status).json({
-      //         data: {
-      //           status: success.status,
-      //           message: success.message,
-      //         }
-      //       });
-      //     })
-      //     .catch(err => {
-      //       console.log('Conversion error:', err)
-      //       next(err)
-      //     });
-      // });
-
-
+      const success = new SuccessResponse(`Word to HTML convert has been successfully`);
+      return res.status(success.status).json({
+        data: {
+          status: success.status,
+          message: success.message,
+        }
+      });
 
     } catch (error) {
       console.log('err', error);
@@ -852,15 +802,12 @@ const documentService = {
       }
       // brew install poppler
 
-
       const extention = '.html'
       const inputPagePath = file.path
       const outputFilePath = `src/public/uploads/txt_${Date.now()}${extention}`;
+
       const outputDir = path.dirname(outputFilePath);
       const baseName = path.basename(outputFilePath, '.html');
-
-      // const outputDir = path.dirname(outputFilePath);
-      // const baseName = path.basename(outputFilePath, '.html');
 
       if (!existsFileSync(inputPagePath)) {
         throw new BadRequestError('Uploaded file does not exist. Please try again.');
@@ -878,20 +825,9 @@ const documentService = {
           return;
         }
         console.log('Conversion successful!', stdout);
+        fileDelete(inputPagePath)
       });
-      // const file1 = fs.readFileSync(inputPath);
 
-      // libre.convert(file1, '.html', undefined, (err: NodeJS.ErrnoException | null, data: Buffer): void => {
-      //   if (err) {
-      //     console.error(`Error converting PDF to HTML: ${err}`);
-      //     return;
-      //   }
-
-      //   fs.writeFileSync(outputPath, data);
-      //   fileDelete(inputPagePath)
-
-      //   console.log('PDF successfully converted to HTML:', outputPath);
-      // });
       const success = new SuccessResponse(`PDF to HTML convert has been successfully`);
       return res.status(success.status).json({
         data: {
@@ -994,7 +930,6 @@ const documentService = {
       next(error)
     }
   },
-
 
 }
 
