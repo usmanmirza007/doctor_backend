@@ -179,6 +179,19 @@
     <input type="file" name="file" accept=".pdf" id="">
     <input type="submit" value="Pdf To PowerPoint">
   </form>
+  <br>
+  <form action="/api/auth/login" method="post">
+    <input type="email" name="email" required id="">
+    <input type="password" name="password" required id="">
+    <br>
+
+    <input type="radio" id="tiff" name="userType" value="DOCTOR" required>
+    <label for="tiff">DOCTOR</label><br>
+    <input type="radio" id="tiff" name="userType" value="PATIENT" required>
+    <label for="tiff">PATIENT</label><br><br>
+    <input type="submit" value="Login">
+  </form>
+  <br>
 </body>
 <script>
   function updateButtonName(radio) {
