@@ -31,7 +31,6 @@
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.1",
     "jwk-to-pem": "^2.0.5",
-    "jwt-simple": "^0.5.6",
     "libreoffice-convert": "^1.6.0",
     "mammoth": "^1.8.0",
     "migrate": "^1.8.0",

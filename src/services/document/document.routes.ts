@@ -2,12 +2,15 @@ import express, { NextFunction, Request, Response } from 'express';
 import documentController from './document.controller';
 import multer from 'multer';
 import { storage } from '../../utils';
+import { jwtAuth } from '../../middleware';
 
 
 export const documentRouter = express.Router();
 
 const upload = multer({ storage: storage }).single('file')
 const uploads = multer({ storage: storage }).array('file', 2)
+
+documentRouter.use(jwtAuth)
 
 function dynamicFileCount(req: Request, res: Response, next: NextFunction) {
   // Determine the file count dynamically, e.g., from the request body or query

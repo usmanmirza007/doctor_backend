@@ -83,33 +83,43 @@ export const addReqUser = async (request: Request, res: Response, next: NextFunc
 export const jwtAuth = (request: Request, res: Response, next: NextFunction) => {
   const req = request as UserRequest;
 
+
   if (req.method == 'GET' || ignoredRoutes.includes(req.path)) {
     return next();
   }
 
   const authStr = req.header('Authorization');
-  if (authStr) {
-    const token = authStr.split(' ')[1];
-    const user = tokenModule.verifyToken(token);
-    if (user) {
-      req.userPayload = user;
-      const cookie = tokenModule.setTokenCookie(token);
-      res.setHeader('Set-Cookie', cookie);
-      return next();
-    }
-  } else {
-    throw new UnauthorizedError('Unauthorized');
-  }
 
-  const token = tokenModule.getTokenFromCookie(req);
-  if (token) {
-    const user = tokenModule.verifyToken(token);
-    if (user) {
-      req.userPayload = user;
+  try {
+
+    if (authStr) {
+      const token = authStr.split(' ')[1];
+      const user = tokenModule.verifyToken(token);
+      if (user) {
+        req.userPayload = user;
+        const cookie = tokenModule.setTokenCookie(token);
+        res.setHeader('Set-Cookie', cookie);
+        return next();
+      }
+    } else {
+      next();
+
+      throw new UnauthorizedError('Unauthorized');
     }
-  } else {
-    throw new UnauthorizedError('Unauthorized');
+
+    const token = tokenModule.getTokenFromCookie(req);
+    if (token) {
+      const user = tokenModule.verifyToken(token);
+      if (user) {
+        req.userPayload = user;
+      }
+    } else {
+      throw new UnauthorizedError('Unauthorized');
+    }
+    next();
+  } catch (error) {
+    next(error);
+
   }
-  next();
 };
 
