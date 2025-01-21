@@ -687,7 +687,6 @@ const documentService = {
       const req = request as MulterRequest;
       const { imagetype } = req.body
       const inputPagePath = req.file.path
-      // console.log('inputPagePath', inputPagePath);
 
       if (!inputPagePath || !imagetype) {
         throw new BadRequestError('Incomplet Parameter');
@@ -700,11 +699,7 @@ const documentService = {
         throw new BadRequestError('Uploaded file does not exist. Please try again.');
       }
 
-      const outputPath = path.resolve(outputFilePath);
-      console.log(';dpdpdp', inputPagePath);
-
       const data = pagesConvert(inputPagePath, outputFilePath, extention, res)
-      console.log('fofofo', data);
 
       fileDelete(inputPagePath)
 
